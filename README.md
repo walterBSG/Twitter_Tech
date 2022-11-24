@@ -23,6 +23,6 @@ You can run it with the comand "python twitterJITClass.py"
 There are 2 needed inputs:
 The Query and the amount of searches. For each search you get 100 tweets. 
 
-The first 100 tweets are the most recent ones. For each extra request, you get tweets from a hour before (freem API limitations)
+The first 100 tweets are the most recent ones. For each extra request, you get tweets from a hour before (free API limitations)
 
 You need to put your credentials for the Twitter API on the archive: "config.py"
