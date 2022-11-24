@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1500px;
+                 height: 1200px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 1500px;
+                 height: 1200px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 0, "id": "@bangordailynews", "label": "@bangordailynews", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "Positive", "label": "Positive", "shape": "dot", "size": 66}, {"font": {"color": "white"}, "group": 0, "id": "@TGTM_Official", "label": "@TGTM_Official", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@SoniaAnn79", "label": "@SoniaAnn79", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@NeonDystopian", "label": "@NeonDystopian", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@FoxNews", "label": "@FoxNews", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 0, "id": "@RandPaul", "label": "@RandPaul", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@NightShiftMD", "label": "@NightShiftMD", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@deonandan", "label": "@deonandan", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@SfNtweets", "label": "@SfNtweets", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@GaryLineker", "label": "@GaryLineker", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@FullFact", "label": "@FullFact", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@ChrisWNunn", "label": "@ChrisWNunn", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@sayerjigmi", "label": "@sayerjigmi", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@Sarscov2_zero", "label": "@Sarscov2_zero", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@KunstJonas", "label": "@KunstJonas", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@SenTedCruz", "label": "@SenTedCruz", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@DrTomFrieden", "label": "@DrTomFrieden", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@GeorgeTakei", "label": "@GeorgeTakei", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@lavern_spicer", "label": "@lavern_spicer", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "#dontlookup", "label": "#dontlookup", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 1, "id": "@GemsOfBollywood", "label": "@GemsOfBollywood", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 1, "id": "@swati_gs", "label": "@swati_gs", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 1, "id": "@SanjeevSanskrit", "label": "@SanjeevSanskrit", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 1, "id": "@RiaRevealed", "label": "@RiaRevealed", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 1, "id": "@TajinderBagga", "label": "@TajinderBagga", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 0, "id": "@TRyanGregory", "label": "@TRyanGregory", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@vortmax79", "label": "@vortmax79", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@zerohedge", "label": "@zerohedge", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@kurteichenwald", "label": "@kurteichenwald", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@cmanic48", "label": "@cmanic48", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@jeffreyAcoates", "label": "@jeffreyAcoates", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@SteppingBackOut", "label": "@SteppingBackOut", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@GoldBlooded79", "label": "@GoldBlooded79", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@JonahDispatch", "label": "@JonahDispatch", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 4, "id": "#teachertwitter", "label": "#teachertwitter", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 4, "id": "#k12", "label": "#k12", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 4, "id": "#education", "label": "#education", "shape": "dot", "size": 12}, {"font": {"color": "white"}, "group": 4, "id": "@hgse", "label": "@hgse", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 0, "id": "@anasalhajji", "label": "@anasalhajji", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@Willie1959range", "label": "@Willie1959range", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@MatthewStadlen", "label": "@MatthewStadlen", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@ThatJoeDanGuy", "label": "@ThatJoeDanGuy", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@ayg011", "label": "@ayg011", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@EireAontaithe32", "label": "@EireAontaithe32", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@mattletiss7", "label": "@mattletiss7", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 0, "id": "@lizlovesmusic", "label": "@lizlovesmusic", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@DwayneR30887340", "label": "@DwayneR30887340", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 7, "id": "@MandydDominguez", "label": "@MandydDominguez", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 7, "id": "@Beastie_BonBon", "label": "@Beastie_BonBon", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 7, "id": "@mitchieemonster", "label": "@mitchieemonster", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 7, "id": "@ABC7", "label": "@ABC7", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 0, "id": "@rexiverson1", "label": "@rexiverson1", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 0, "id": "@friendlycovid19", "label": "@friendlycovid19", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@MarshaBlackburn", "label": "@MarshaBlackburn", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 0, "id": "@LandofCLE", "label": "@LandofCLE", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@Heyward1995", "label": "@Heyward1995", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 4, "id": "#remove", "label": "#remove", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "#nta", "label": "#nta", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "@DG_NTA", "label": "@DG_NTA", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "@AnkitaPundir26", "label": "@AnkitaPundir26", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "@PMOIndia", "label": "@PMOIndia", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "@ugc_india", "label": "@ugc_india", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "@mamidala90", "label": "@mamidala90", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 4, "id": "@dpradhanbjp", "label": "@dpradhanbjp", "shape": "dot", "size": 9}, {"font": {"color": "white"}, "group": 0, "id": "@chris_neto", "label": "@chris_neto", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 0, "id": "@DanaMetcalfe5", "label": "@DanaMetcalfe5", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "Negative", "label": "Negative", "shape": "dot", "size": 69}, {"font": {"color": "white"}, "group": 2, "id": "@AnchorsNLegos", "label": "@AnchorsNLegos", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@JoshuaSeattle1", "label": "@JoshuaSeattle1", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "#GETTR", "label": "#GETTR", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "#CCP", "label": "#CCP", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "#US", "label": "#US", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@TheHare14", "label": "@TheHare14", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 2, "id": "@StevePaul63", "label": "@StevePaul63", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 2, "id": "@BGreenbakk", "label": "@BGreenbakk", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 2, "id": "@john4brexit", "label": "@john4brexit", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 5, "id": "@AshDSpencer", "label": "@AshDSpencer", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 5, "id": "@TheWatc47403040", "label": "@TheWatc47403040", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 5, "id": "@PantherPride89", "label": "@PantherPride89", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 5, "id": "@DrEliDavid", "label": "@DrEliDavid", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": 2, "id": "@POTUS", "label": "@POTUS", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@RachelNotley", "label": "@RachelNotley", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@capybarasexua", "label": "@capybarasexua", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@mynamesnotgordy", "label": "@mynamesnotgordy", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@JohnKerry", "label": "@JohnKerry", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@SpeakerPelosi", "label": "@SpeakerPelosi", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@Sarasearching", "label": "@Sarasearching", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@OTforLC", "label": "@OTforLC", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@longcovidman", "label": "@longcovidman", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@GeoEduOne", "label": "@GeoEduOne", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@NoContextBrits", "label": "@NoContextBrits", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@eugyppius1", "label": "@eugyppius1", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@BlueBoxDave", "label": "@BlueBoxDave", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@RBReich", "label": "@RBReich", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@WildHoney808", "label": "@WildHoney808", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@JoeTurnerSr1967", "label": "@JoeTurnerSr1967", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@NicoReznick", "label": "@NicoReznick", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@EvaVlaar", "label": "@EvaVlaar", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "#Fiefdom", "label": "#Fiefdom", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@TomFitton", "label": "@TomFitton", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 3, "id": "@Coll1313", "label": "@Coll1313", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 3, "id": "@stranahan", "label": "@stranahan", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 3, "id": "@JackPosobiec", "label": "@JackPosobiec", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@BNOFeed", "label": "@BNOFeed", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@Haggis_UK", "label": "@Haggis_UK", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@SamHarrisOrg", "label": "@SamHarrisOrg", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@Gtwy", "label": "@Gtwy", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@livetweettweet", "label": "@livetweettweet", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@NathanMackBrown", "label": "@NathanMackBrown", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@nypost", "label": "@nypost", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@deadeg0", "label": "@deadeg0", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@ClownWorld_", "label": "@ClownWorld_", "shape": "dot", "size": 2}, {"font": {"color": "white"}, "group": 2, "id": "@KarenSc18087033", "label": "@KarenSc18087033", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@MaureenLS", "label": "@MaureenLS", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@bennyjohnson", "label": "@bennyjohnson", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 6, "id": "@DaveyLad9", "label": "@DaveyLad9", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 6, "id": "@JackieSharpe1", "label": "@JackieSharpe1", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 6, "id": "@ElisabethBorre2", "label": "@ElisabethBorre2", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 6, "id": "@thecoastguy", "label": "@thecoastguy", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 2, "id": "@laralogan", "label": "@laralogan", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@Noctuxnal", "label": "@Noctuxnal", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@mrscorer", "label": "@mrscorer", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@BreezerGalway", "label": "@BreezerGalway", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@jneill", "label": "@jneill", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@ArtKorenevsky", "label": "@ArtKorenevsky", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@humftydrumpfty", "label": "@humftydrumpfty", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@prairiecentrist", "label": "@prairiecentrist", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@PeterSweden7", "label": "@PeterSweden7", "shape": "dot", "size": 1}, {"font": {"color": "white"}, "group": 2, "id": "@Ac3iteDeOlivia", "label": "@Ac3iteDeOlivia", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@joyheon", "label": "@joyheon", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 2, "id": "@joakimlip", "label": "@joakimlip", "shape": "dot", "size": 3}, {"font": {"color": "white"}, "group": 5, "id": "@Marina35690107", "label": "@Marina35690107", "shape": "dot", "size": 4}, {"font": {"color": "white"}, "group": 2, "id": "@cbassg16", "label": "@cbassg16", "shape": "dot", "size": 1}]);
+                  edges = new vis.DataSet([{"from": "@bangordailynews", "to": "Positive", "value": 10, "width": 1}, {"from": "Positive", "to": "@TGTM_Official", "value": 10, "width": 1}, {"from": "Positive", "to": "@SoniaAnn79", "value": 10, "width": 1}, {"from": "Positive", "to": "@NeonDystopian", "value": 10, "width": 1}, {"from": "Positive", "to": "@FoxNews", "value": 20, "width": 1}, {"from": "Positive", "to": "@RandPaul", "value": 10, "width": 1}, {"from": "Positive", "to": "@NightShiftMD", "value": 10, "width": 1}, {"from": "Positive", "to": "@deonandan", "value": 20, "width": 1}, {"from": "Positive", "to": "@SfNtweets", "value": 10, "width": 1}, {"from": "Positive", "to": "@GaryLineker", "value": 10, "width": 1}, {"from": "Positive", "to": "@FullFact", "value": 10, "width": 1}, {"from": "Positive", "to": "@ChrisWNunn", "value": 10, "width": 1}, {"from": "Positive", "to": "@sayerjigmi", "value": 10, "width": 1}, {"from": "Positive", "to": "@Sarscov2_zero", "value": 10, "width": 1}, {"from": "Positive", "to": "@KunstJonas", "value": 10, "width": 1}, {"from": "Positive", "to": "@SenTedCruz", "value": 10, "width": 1}, {"from": "Positive", "to": "@DrTomFrieden", "value": 10, "width": 1}, {"from": "Positive", "to": "@GeorgeTakei", "value": 10, "width": 1}, {"from": "Positive", "to": "@lavern_spicer", "value": 10, "width": 1}, {"from": "Positive", "to": "#dontlookup", "value": 10, "width": 1}, {"from": "Positive", "to": "@GemsOfBollywood", "value": 10, "width": 1}, {"from": "Positive", "to": "@swati_gs", "value": 10, "width": 1}, {"from": "Positive", "to": "@SanjeevSanskrit", "value": 10, "width": 1}, {"from": "Positive", "to": "@RiaRevealed", "value": 10, "width": 1}, {"from": "Positive", "to": "@TajinderBagga", "value": 10, "width": 1}, {"from": "Positive", "to": "@TRyanGregory", "value": 20, "width": 1}, {"from": "Positive", "to": "@vortmax79", "value": 10, "width": 1}, {"from": "Positive", "to": "@zerohedge", "value": 10, "width": 1}, {"from": "Positive", "to": "@kurteichenwald", "value": 10, "width": 1}, {"from": "Positive", "to": "@cmanic48", "value": 10, "width": 1}, {"from": "Positive", "to": "@jeffreyAcoates", "value": 10, "width": 1}, {"from": "Positive", "to": "@SteppingBackOut", "value": 10, "width": 1}, {"from": "Positive", "to": "@GoldBlooded79", "value": 10, "width": 1}, {"from": "Positive", "to": "@JonahDispatch", "value": 10, "width": 1}, {"from": "Positive", "to": "#teachertwitter", "value": 10, "width": 1}, {"from": "Positive", "to": "#k12", "value": 10, "width": 1}, {"from": "Positive", "to": "#education", "value": 20, "width": 1}, {"from": "Positive", "to": "@hgse", "value": 10, "width": 1}, {"from": "Positive", "to": "@anasalhajji", "value": 10, "width": 1}, {"from": "Positive", "to": "@Willie1959range", "value": 10, "width": 1}, {"from": "Positive", "to": "@MatthewStadlen", "value": 10, "width": 1}, {"from": "Positive", "to": "@ThatJoeDanGuy", "value": 10, "width": 1}, {"from": "Positive", "to": "@ayg011", "value": 10, "width": 1}, {"from": "Positive", "to": "@EireAontaithe32", "value": 10, "width": 1}, {"from": "Positive", "to": "@mattletiss7", "value": 10, "width": 1}, {"from": "Positive", "to": "@lizlovesmusic", "value": 10, "width": 1}, {"from": "Positive", "to": "@DwayneR30887340", "value": 10, "width": 1}, {"from": "Positive", "to": "@MandydDominguez", "value": 10, "width": 1}, {"from": "Positive", "to": "@Beastie_BonBon", "value": 10, "width": 1}, {"from": "Positive", "to": "@mitchieemonster", "value": 10, "width": 1}, {"from": "Positive", "to": "@ABC7", "value": 10, "width": 1}, {"from": "Positive", "to": "@rexiverson1", "value": 10, "width": 1}, {"from": "Positive", "to": "@friendlycovid19", "value": 10, "width": 1}, {"from": "Positive", "to": "@MarshaBlackburn", "value": 10, "width": 1}, {"from": "Positive", "to": "@LandofCLE", "value": 10, "width": 1}, {"from": "Positive", "to": "@Heyward1995", "value": 10, "width": 1}, {"from": "Positive", "to": "#remove", "value": 10, "width": 1}, {"from": "Positive", "to": "#nta", "value": 10, "width": 1}, {"from": "Positive", "to": "@DG_NTA", "value": 10, "width": 1}, {"from": "Positive", "to": "@AnkitaPundir26", "value": 10, "width": 1}, {"from": "Positive", "to": "@PMOIndia", "value": 10, "width": 1}, {"from": "Positive", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "Positive", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "Positive", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "Positive", "to": "@chris_neto", "value": 10, "width": 1}, {"from": "Positive", "to": "@DanaMetcalfe5", "value": 8, "width": 1}, {"from": "@MarshaBlackburn", "to": "Negative", "value": 20, "width": 1}, {"from": "@MarshaBlackburn", "to": "@AnchorsNLegos", "value": 10, "width": 1}, {"from": "@MarshaBlackburn", "to": "@JoshuaSeattle1", "value": 10, "width": 1}, {"from": "Negative", "to": "#GETTR", "value": 10, "width": 1}, {"from": "Negative", "to": "#CCP", "value": 10, "width": 1}, {"from": "Negative", "to": "#US", "value": 10, "width": 1}, {"from": "Negative", "to": "@TheHare14", "value": 10, "width": 1}, {"from": "Negative", "to": "@StevePaul63", "value": 10, "width": 1}, {"from": "Negative", "to": "@BGreenbakk", "value": 10, "width": 1}, {"from": "Negative", "to": "@john4brexit", "value": 10, "width": 1}, {"from": "Negative", "to": "@AshDSpencer", "value": 18, "width": 1}, {"from": "Negative", "to": "@TheWatc47403040", "value": 10, "width": 1}, {"from": "Negative", "to": "@PantherPride89", "value": 18, "width": 1}, {"from": "Negative", "to": "@DrEliDavid", "value": 18, "width": 1}, {"from": "Negative", "to": "@POTUS", "value": 10, "width": 1}, {"from": "Negative", "to": "@RachelNotley", "value": 20, "width": 1}, {"from": "Negative", "to": "@capybarasexua", "value": 10, "width": 1}, {"from": "Negative", "to": "@mynamesnotgordy", "value": 10, "width": 1}, {"from": "Negative", "to": "@JohnKerry", "value": 10, "width": 1}, {"from": "Negative", "to": "@SpeakerPelosi", "value": 10, "width": 1}, {"from": "Negative", "to": "@Sarasearching", "value": 10, "width": 1}, {"from": "Negative", "to": "@OTforLC", "value": 10, "width": 1}, {"from": "Negative", "to": "@longcovidman", "value": 10, "width": 1}, {"from": "Negative", "to": "@GeoEduOne", "value": 10, "width": 1}, {"from": "Negative", "to": "@NoContextBrits", "value": 10, "width": 1}, {"from": "Negative", "to": "@eugyppius1", "value": 10, "width": 1}, {"from": "Negative", "to": "@BlueBoxDave", "value": 10, "width": 1}, {"from": "Negative", "to": "@RBReich", "value": 10, "width": 1}, {"from": "Negative", "to": "@WildHoney808", "value": 10, "width": 1}, {"from": "Negative", "to": "@JoeTurnerSr1967", "value": 10, "width": 1}, {"from": "Negative", "to": "@NicoReznick", "value": 10, "width": 1}, {"from": "Negative", "to": "@EvaVlaar", "value": 10, "width": 1}, {"from": "Negative", "to": "#Fiefdom", "value": 10, "width": 1}, {"from": "Negative", "to": "@TomFitton", "value": 10, "width": 1}, {"from": "Negative", "to": "@Coll1313", "value": 10, "width": 1}, {"from": "Negative", "to": "@stranahan", "value": 10, "width": 1}, {"from": "Negative", "to": "@JackPosobiec", "value": 10, "width": 1}, {"from": "Negative", "to": "@BNOFeed", "value": 10, "width": 1}, {"from": "Negative", "to": "@Haggis_UK", "value": 10, "width": 1}, {"from": "Negative", "to": "@sayerjigmi", "value": 10, "width": 1}, {"from": "Negative", "to": "@SamHarrisOrg", "value": 10, "width": 1}, {"from": "Negative", "to": "@Gtwy", "value": 10, "width": 1}, {"from": "Negative", "to": "@livetweettweet", "value": 10, "width": 1}, {"from": "Negative", "to": "@NathanMackBrown", "value": 10, "width": 1}, {"from": "Negative", "to": "@nypost", "value": 10, "width": 1}, {"from": "Negative", "to": "@lavern_spicer", "value": 10, "width": 1}, {"from": "Negative", "to": "@deadeg0", "value": 10, "width": 1}, {"from": "Negative", "to": "@ClownWorld_", "value": 10, "width": 1}, {"from": "Negative", "to": "@AnchorsNLegos", "value": 10, "width": 1}, {"from": "Negative", "to": "@JoshuaSeattle1", "value": 10, "width": 1}, {"from": "Negative", "to": "@KarenSc18087033", "value": 10, "width": 1}, {"from": "Negative", "to": "@MaureenLS", "value": 10, "width": 1}, {"from": "Negative", "to": "@bennyjohnson", "value": 10, "width": 1}, {"from": "Negative", "to": "@DaveyLad9", "value": 10, "width": 1}, {"from": "Negative", "to": "@JackieSharpe1", "value": 10, "width": 1}, {"from": "Negative", "to": "@ElisabethBorre2", "value": 10, "width": 1}, {"from": "Negative", "to": "@thecoastguy", "value": 10, "width": 1}, {"from": "Negative", "to": "@laralogan", "value": 10, "width": 1}, {"from": "Negative", "to": "@Noctuxnal", "value": 10, "width": 1}, {"from": "Negative", "to": "@mrscorer", "value": 10, "width": 1}, {"from": "Negative", "to": "@BreezerGalway", "value": 10, "width": 1}, {"from": "Negative", "to": "@jneill", "value": 10, "width": 1}, {"from": "Negative", "to": "@ArtKorenevsky", "value": 10, "width": 1}, {"from": "Negative", "to": "@humftydrumpfty", "value": 10, "width": 1}, {"from": "Negative", "to": "@prairiecentrist", "value": 10, "width": 1}, {"from": "Negative", "to": "@PeterSweden7", "value": 10, "width": 1}, {"from": "Negative", "to": "@Ac3iteDeOlivia", "value": 10, "width": 1}, {"from": "Negative", "to": "@joyheon", "value": 10, "width": 1}, {"from": "Negative", "to": "@joakimlip", "value": 10, "width": 1}, {"from": "Negative", "to": "@Marina35690107", "value": 8, "width": 1}, {"from": "Negative", "to": "@cbassg16", "value": 2, "width": 1}, {"from": "#GETTR", "to": "#CCP", "value": 10, "width": 1}, {"from": "#GETTR", "to": "#US", "value": 10, "width": 1}, {"from": "#CCP", "to": "#US", "value": 10, "width": 1}, {"from": "@TheHare14", "to": "@StevePaul63", "value": 10, "width": 1}, {"from": "@TheHare14", "to": "@BGreenbakk", "value": 10, "width": 1}, {"from": "@TheHare14", "to": "@john4brexit", "value": 10, "width": 1}, {"from": "@StevePaul63", "to": "@BGreenbakk", "value": 10, "width": 1}, {"from": "@StevePaul63", "to": "@john4brexit", "value": 10, "width": 1}, {"from": "@BGreenbakk", "to": "@john4brexit", "value": 10, "width": 1}, {"from": "@AshDSpencer", "to": "@TheWatc47403040", "value": 10, "width": 1}, {"from": "@AshDSpencer", "to": "@PantherPride89", "value": 18, "width": 1}, {"from": "@AshDSpencer", "to": "@DrEliDavid", "value": 18, "width": 1}, {"from": "@AshDSpencer", "to": "@Marina35690107", "value": 8, "width": 1}, {"from": "@TheWatc47403040", "to": "@PantherPride89", "value": 10, "width": 1}, {"from": "@TheWatc47403040", "to": "@DrEliDavid", "value": 10, "width": 1}, {"from": "@PantherPride89", "to": "@DrEliDavid", "value": 18, "width": 1}, {"from": "@PantherPride89", "to": "@Marina35690107", "value": 8, "width": 1}, {"from": "@DrEliDavid", "to": "@Marina35690107", "value": 8, "width": 1}, {"from": "@SoniaAnn79", "to": "@NeonDystopian", "value": 10, "width": 1}, {"from": "@SoniaAnn79", "to": "@FoxNews", "value": 10, "width": 1}, {"from": "@NeonDystopian", "to": "@FoxNews", "value": 10, "width": 1}, {"from": "@FoxNews", "to": "@DwayneR30887340", "value": 10, "width": 1}, {"from": "@NightShiftMD", "to": "@deonandan", "value": 10, "width": 1}, {"from": "@deonandan", "to": "@TRyanGregory", "value": 10, "width": 1}, {"from": "@capybarasexua", "to": "@mynamesnotgordy", "value": 10, "width": 1}, {"from": "@JohnKerry", "to": "@SpeakerPelosi", "value": 10, "width": 1}, {"from": "@Sarasearching", "to": "@OTforLC", "value": 10, "width": 1}, {"from": "@longcovidman", "to": "@GeoEduOne", "value": 10, "width": 1}, {"from": "@Sarscov2_zero", "to": "@KunstJonas", "value": 10, "width": 1}, {"from": "@GemsOfBollywood", "to": "@swati_gs", "value": 10, "width": 1}, {"from": "@GemsOfBollywood", "to": "@SanjeevSanskrit", "value": 10, "width": 1}, {"from": "@GemsOfBollywood", "to": "@RiaRevealed", "value": 10, "width": 1}, {"from": "@GemsOfBollywood", "to": "@TajinderBagga", "value": 10, "width": 1}, {"from": "@swati_gs", "to": "@SanjeevSanskrit", "value": 10, "width": 1}, {"from": "@swati_gs", "to": "@RiaRevealed", "value": 10, "width": 1}, {"from": "@swati_gs", "to": "@TajinderBagga", "value": 10, "width": 1}, {"from": "@SanjeevSanskrit", "to": "@RiaRevealed", "value": 10, "width": 1}, {"from": "@SanjeevSanskrit", "to": "@TajinderBagga", "value": 10, "width": 1}, {"from": "@RiaRevealed", "to": "@TajinderBagga", "value": 10, "width": 1}, {"from": "@TRyanGregory", "to": "@Heyward1995", "value": 10, "width": 1}, {"from": "@Coll1313", "to": "@stranahan", "value": 10, "width": 1}, {"from": "@Coll1313", "to": "@JackPosobiec", "value": 10, "width": 1}, {"from": "@stranahan", "to": "@JackPosobiec", "value": 10, "width": 1}, {"from": "@vortmax79", "to": "@zerohedge", "value": 10, "width": 1}, {"from": "@kurteichenwald", "to": "@cmanic48", "value": 10, "width": 1}, {"from": "@jeffreyAcoates", "to": "@SteppingBackOut", "value": 10, "width": 1}, {"from": "@jeffreyAcoates", "to": "@GoldBlooded79", "value": 10, "width": 1}, {"from": "@SteppingBackOut", "to": "@GoldBlooded79", "value": 10, "width": 1}, {"from": "#teachertwitter", "to": "#k12", "value": 10, "width": 1}, {"from": "#teachertwitter", "to": "#education", "value": 10, "width": 1}, {"from": "#teachertwitter", "to": "@hgse", "value": 10, "width": 1}, {"from": "#k12", "to": "#education", "value": 10, "width": 1}, {"from": "#k12", "to": "@hgse", "value": 10, "width": 1}, {"from": "#education", "to": "@hgse", "value": 10, "width": 1}, {"from": "#education", "to": "#remove", "value": 10, "width": 1}, {"from": "#education", "to": "#nta", "value": 10, "width": 1}, {"from": "#education", "to": "@DG_NTA", "value": 10, "width": 1}, {"from": "#education", "to": "@AnkitaPundir26", "value": 10, "width": 1}, {"from": "#education", "to": "@PMOIndia", "value": 10, "width": 1}, {"from": "#education", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "#education", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "#education", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@Gtwy", "to": "@livetweettweet", "value": 10, "width": 1}, {"from": "@Gtwy", "to": "@NathanMackBrown", "value": 10, "width": 1}, {"from": "@livetweettweet", "to": "@NathanMackBrown", "value": 10, "width": 1}, {"from": "@ayg011", "to": "@EireAontaithe32", "value": 10, "width": 1}, {"from": "@ayg011", "to": "@mattletiss7", "value": 10, "width": 1}, {"from": "@EireAontaithe32", "to": "@mattletiss7", "value": 10, "width": 1}, {"from": "@deadeg0", "to": "@ClownWorld_", "value": 10, "width": 1}, {"from": "@AnchorsNLegos", "to": "@JoshuaSeattle1", "value": 10, "width": 1}, {"from": "@KarenSc18087033", "to": "@MaureenLS", "value": 10, "width": 1}, {"from": "@KarenSc18087033", "to": "@bennyjohnson", "value": 10, "width": 1}, {"from": "@MaureenLS", "to": "@bennyjohnson", "value": 10, "width": 1}, {"from": "@DaveyLad9", "to": "@JackieSharpe1", "value": 10, "width": 1}, {"from": "@DaveyLad9", "to": "@ElisabethBorre2", "value": 10, "width": 1}, {"from": "@DaveyLad9", "to": "@thecoastguy", "value": 10, "width": 1}, {"from": "@JackieSharpe1", "to": "@ElisabethBorre2", "value": 10, "width": 1}, {"from": "@JackieSharpe1", "to": "@thecoastguy", "value": 10, "width": 1}, {"from": "@ElisabethBorre2", "to": "@thecoastguy", "value": 10, "width": 1}, {"from": "@MandydDominguez", "to": "@Beastie_BonBon", "value": 10, "width": 1}, {"from": "@MandydDominguez", "to": "@mitchieemonster", "value": 10, "width": 1}, {"from": "@MandydDominguez", "to": "@ABC7", "value": 10, "width": 1}, {"from": "@Beastie_BonBon", "to": "@mitchieemonster", "value": 10, "width": 1}, {"from": "@Beastie_BonBon", "to": "@ABC7", "value": 10, "width": 1}, {"from": "@mitchieemonster", "to": "@ABC7", "value": 10, "width": 1}, {"from": "@rexiverson1", "to": "@friendlycovid19", "value": 10, "width": 1}, {"from": "#remove", "to": "#nta", "value": 10, "width": 1}, {"from": "#remove", "to": "@DG_NTA", "value": 10, "width": 1}, {"from": "#remove", "to": "@AnkitaPundir26", "value": 10, "width": 1}, {"from": "#remove", "to": "@PMOIndia", "value": 10, "width": 1}, {"from": "#remove", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "#remove", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "#remove", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "#nta", "to": "@DG_NTA", "value": 10, "width": 1}, {"from": "#nta", "to": "@AnkitaPundir26", "value": 10, "width": 1}, {"from": "#nta", "to": "@PMOIndia", "value": 10, "width": 1}, {"from": "#nta", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "#nta", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "#nta", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@DG_NTA", "to": "@AnkitaPundir26", "value": 10, "width": 1}, {"from": "@DG_NTA", "to": "@PMOIndia", "value": 10, "width": 1}, {"from": "@DG_NTA", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "@DG_NTA", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "@DG_NTA", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@AnkitaPundir26", "to": "@PMOIndia", "value": 10, "width": 1}, {"from": "@AnkitaPundir26", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "@AnkitaPundir26", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "@AnkitaPundir26", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@PMOIndia", "to": "@ugc_india", "value": 10, "width": 1}, {"from": "@PMOIndia", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "@PMOIndia", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@ugc_india", "to": "@mamidala90", "value": 10, "width": 1}, {"from": "@ugc_india", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@mamidala90", "to": "@dpradhanbjp", "value": 10, "width": 1}, {"from": "@mrscorer", "to": "@BreezerGalway", "value": 10, "width": 1}, {"from": "@mrscorer", "to": "@jneill", "value": 10, "width": 1}, {"from": "@BreezerGalway", "to": "@jneill", "value": 10, "width": 1}, {"from": "@ArtKorenevsky", "to": "@humftydrumpfty", "value": 10, "width": 1}, {"from": "@ArtKorenevsky", "to": "@prairiecentrist", "value": 10, "width": 1}, {"from": "@humftydrumpfty", "to": "@prairiecentrist", "value": 10, "width": 1}, {"from": "@Ac3iteDeOlivia", "to": "@joyheon", "value": 10, "width": 1}, {"from": "@Ac3iteDeOlivia", "to": "@joakimlip", "value": 10, "width": 1}, {"from": "@joyheon", "to": "@joakimlip", "value": 10, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
